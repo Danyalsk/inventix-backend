@@ -7,10 +7,10 @@ COPY package-lock.json .
 
 RUN npm install --production
 
-COPY src src
-COPY tsconfig.json .
+# COPY src src
+
 
 ENV NODE_ENV production
-CMD ["node", "src/server.js"]
+CMD ["node", "server.js"]
 
 EXPOSE 4040
