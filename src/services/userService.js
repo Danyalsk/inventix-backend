@@ -116,6 +116,23 @@ const editUser = async (id, userData) => {
     hashedPassword = await bcrypt.hash(password, 10);
   }
 
+  const checks = [
+    { field: "username", value: username, error: "Username already exists" },
+    { field: "email", value: email, error: "Email already exists" },
+  ];
+
+  for (const check of checks) {
+    if (check.value) {
+      const existing = await pgPool.query(
+        `SELECT * FROM users WHERE ${check.field} = $1 AND id != $2`,
+        [check.value, id]
+      );
+      if (existing.rows.length > 0) {
+        throw new Error(check.error);
+      }
+    }
+  }
+
   const result = await pgPool.query(
     `UPDATE users SET 
         first_name = COALESCE($1, first_name),
