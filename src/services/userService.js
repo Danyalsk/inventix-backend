@@ -90,11 +90,66 @@ const createUser = async (userData) => {
   };
 };
 
-const getUsers = async () => {
+const editUser = async (id, userData) => {
+  const {
+    first_name,
+    last_name,
+    email,
+    phone,
+    username,
+    password,
+    status,
+    role,
+    profile,
+    notes,
+  } = userData;
+
+  const existingUser = await pgPool.query(`SELECT * FROM users WHERE id = $1`, [
+    id,
+  ]);
+  if (existingUser.rows.length === 0) {
+    throw new Error("User not found");
+  }
+
+  let hashedPassword = existingUser.rows[0].password;
+  if (password) {
+    hashedPassword = await bcrypt.hash(password, 10);
+  }
+
   const result = await pgPool.query(
-    `SELECT id, first_name ,last_name , email, phone, username, status, role, profile, joining, notes FROM users`
+    `UPDATE users SET 
+        first_name = COALESCE($1, first_name),
+        last_name = COALESCE($2, last_name),
+        email = COALESCE($3, email),
+        phone = COALESCE($4, phone),
+        username = COALESCE($5, username),
+        password = COALESCE($6, password),
+        status = COALESCE($7, status),
+        role = COALESCE($8, role),
+        profile = COALESCE($9, profile),
+        notes = COALESCE($10, notes)
+      WHERE id = $11 RETURNING id`,
+    [
+      first_name,
+      last_name,
+      email,
+      phone,
+      username,
+      hashedPassword,
+      status,
+      role,
+      profile,
+      notes,
+      id,
+    ]
   );
+
+  return { message: "User updated successfully", userId: result.rows[0].id };
+};
+
+const getUsers = async () => {
+  const result = await pgPool.query(`SELECT * FROM users`);
   return result.rows;
 };
 
-export default { loginUser, getUsers, createUser };
+export default { loginUser, getUsers, createUser, editUser };
