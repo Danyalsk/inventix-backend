@@ -48,12 +48,9 @@ app.use("/v1", UserRouter);
 // });
 
 app.use(express.static("build"));
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "build", "index.html"));
-});
 
-app.get("/hello", (req, res) => {
-  res.send("Hello World!");
+app.get("/", (req, res) => {
+  res.send("Working chill Out!");
 });
 
 app.listen(port, () => {

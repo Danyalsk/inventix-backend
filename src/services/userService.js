@@ -166,6 +166,8 @@ const editUser = async (id, userData) => {
 
 const getUsers = async () => {
   const result = await pgPool.query(`SELECT * FROM users`);
+  // Use console.log only if this function is called and awaited
+  console.log("Fetched users:", result.rows);
   return result.rows;
 };
 
