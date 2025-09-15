@@ -49,7 +49,7 @@ app.use("/v1", UserRouter);
 
 app.use(express.static("build"));
 
-app.get("/", (req, res) => {
+app.get("/testing", (req, res) => {
   res.send("Working chill Out!");
 });
 

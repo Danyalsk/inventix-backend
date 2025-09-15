@@ -8,13 +8,19 @@ export const pgPool = new Pool({
   max: 5,
 });
 
-try {
-  await pgPool.connect();
-  console.log("Connected to the database");
-} catch (error) {
-  console.error("Failed to connect to the database:", error);
-}
+// Test initial connection
+(async () => {
+  try {
+    const client = await pgPool.connect();
+    console.log("Connected to the database");
+    client.release(); // release immediately to pool
+  } catch (error) {
+    console.error("Failed to connect to the database:", error);
+  }
+})();
 
-pgPool.on("error", async () => {
-  await pgPool.connect();
+// Handle unexpected errors (client-level)
+pgPool.on("error", (err) => {
+  console.error("Unexpected database error on idle client", err);
+  // Do NOT try to reconnect here manually
 });
