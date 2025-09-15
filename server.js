@@ -1,9 +1,10 @@
 import express from "express";
 // import { pgPool } from "./src/config/pg.js";
-// import axios from "axios";
+import axios from "axios";
 import cors from "cors";
 import routes from "./src/routes/index.js";
 import UserRouter from "./src/routes/userRouter.js";
+import cron from "node-cron";
 
 const app = express();
 const port = 4040;
@@ -48,6 +49,15 @@ app.use("/v1", UserRouter);
 // });
 
 app.use(express.static("build"));
+
+cron.schedule("*/5 * * * *", async () => {
+  try {
+    const response = await axios.get("https://inventix-backend-1.onrender.com");
+    console.log(`Health check response: ${response.status}`);
+  } catch (error) {
+    console.error(`Health check error: ${error.message}`);
+  }
+});
 
 app.get("/", (req, res) => {
   res.send("Working chill Out!");

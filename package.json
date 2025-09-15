@@ -21,13 +21,14 @@
   "description": "",
   "dependencies": {
     "@apollo/client": "^3.12.4",
-    "axios": "^1.7.9",
+    "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "graphql": "^16.10.0",
     "jsonwebtoken": "^9.0.2",
+    "node-cron": "^4.2.1",
     "pg": "^8.13.3"
   },
   "keywords": [],
